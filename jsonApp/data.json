@@ -1,0 +1,57 @@
+{
+    "companies": [
+      {
+        "companyId": 1,
+        "name": "TechCorp Inc.",
+        "address": "123 Tech Street, Silicon Valley, CA",
+        "industry": "Technology",
+        "createdAt": "2024-12-26T10:00:00Z",
+        "updatedAt": "2024-12-26T10:00:00Z",
+        "admins": [
+          {
+            "adminId": 101,
+            "name": "John Doe",
+            "email": "john.doe@techcorp.com",
+            "phone": "+1-555-123-4567",
+            "createdAt": "2024-12-26T10:00:00Z",
+            "updatedAt": "2024-12-26T10:00:00Z"
+          }
+        ],
+        "hr": [
+          {
+            "hrId": 201,
+            "name": "Jane Smith",
+            "email": "jane.smith@techcorp.com",
+            "phone": "+1-555-987-6543",
+            "department": "Human Resources",
+            "createdAt": "2024-12-26T10:00:00Z",
+            "updatedAt": "2024-12-26T10:00:00Z"
+          }
+        ],
+        "employees": [
+          {
+            "employeeId": 301,
+            "name": "Alice Johnson",
+            "email": "alice.johnson@techcorp.com",
+            "phone": "+1-555-567-8901",
+            "position": "Software Engineer",
+            "salary": 90000,
+            "hireDate": "2022-06-15",
+            "createdAt": "2024-12-26T10:00:00Z",
+            "updatedAt": "2024-12-26T10:00:00Z"
+          },
+          {
+            "employeeId": 302,
+            "name": "Bob Williams",
+            "email": "bob.williams@techcorp.com",
+            "phone": "+1-555-234-5678",
+            "position": "Data Analyst",
+            "salary": 75000,
+            "hireDate": "2023-01-10",
+            "createdAt": "2024-12-26T10:00:00Z",
+            "updatedAt": "2024-12-26T10:00:00Z"
+          }
+        ]
+      }
+    ]
+  }
