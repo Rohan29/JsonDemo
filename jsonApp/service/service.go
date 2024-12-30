@@ -3,17 +3,24 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"jsonApp/config"
 	"jsonApp/dao"
 	handler "jsonApp/handler"
 	model "jsonApp/model"
+	"jsonApp/utility"
 	"log"
 )
 
-func GetDataFromJson(data []byte) {
+func GetDataFromJson() {
+	fileContents, filerr := utility.ReadCompaniesFromFile(config.FilePath)
+	if filerr != nil {
+		log.Fatalf("Error: %v", filerr)
+		return
+	}
 
 	var compData model.JsonCompaniesData
 
-	err := json.Unmarshal(data, &compData)
+	err := json.Unmarshal(fileContents, &compData)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,25 +40,6 @@ func GetDataFromJson(data []byte) {
 			mycompanyData = companyData1
 		}
 
-		// var wg sync.WaitGroup
-		// errChan := make(chan error, 10)
-		// fmt.Println("Company Data", company)
-		// wg.Add(1)
-		// go func() {
-		// 	defer wg.Done()
-		// 	// Insert company data into the "companies" collection
-		// 	companyResult, err := companyCollection.InsertOne(context.Background(), company)
-		// 	if err != nil {
-		// 		errChan <- err
-		// 		//log.Fatal("Failed to insert company:", err)
-		// 	}
-		// 	// Retrieve company ID from the insert result
-		// 	companyID := companyResult.InsertedID
-		// 	companyID1 := company.CompanyID
-		// 	fmt.Printf("Inserted company with ID: %v and companyid: %v\n", companyID, companyID1)
-		// }()
-
-		// // Insert admins data into the "admins" collection
 		for _, admin := range companyData.Admins {
 			admin.CompanyID = companyId
 			err, newAdmin := handler.ValidateAdminFields(admin)
@@ -61,14 +49,8 @@ func GetDataFromJson(data []byte) {
 				myAdmins = newAdmin
 			}
 			fmt.Println("Admin data", admin)
-			// _, err := adminCollection.InsertOne(context.Background(), admin)
-			// if err != nil {
-			// 	log.Fatal(err)
-			// }
-			// fmt.Printf("Inserted admin: %v\n", admin.AdminID)
 		}
 
-		// // // Insert hr data into the "hrs" collection
 		for _, hr := range companyData.HR {
 			hr.CompanyID = companyId
 			err, newHR := handler.ValidateHRFields(hr)
@@ -77,14 +59,8 @@ func GetDataFromJson(data []byte) {
 			} else {
 				myHr = newHR
 			}
-			// _, err := hrCollection.InsertOne(context.Background(), hr)
-			// if err != nil {
-			// 	log.Fatal(err)
-			// }
-			// fmt.Printf("Inserted HR: %v\n", hr.HRID)
 		}
 
-		// // Insert employees data into the "employees" collection
 		for _, employee := range companyData.Employees {
 			employee.CompanyID = companyId
 			err, newEmployee := handler.ValidateEmployeeFields(employee)
@@ -93,17 +69,14 @@ func GetDataFromJson(data []byte) {
 			} else {
 				myEmployee = append(myEmployee, *newEmployee)
 			}
-			// _, err := employeeCollection.InsertOne(context.Background(), employee)
-			// if err != nil {
-			// 	log.Fatal(err)
-			// }
-			// fmt.Printf("Inserted employee: %v\n", employee.EmployeeID)
 		}
 
-		fmt.Println("All data inserted successfully.")
 	}
 	dao.SaveCompanyData(mycompanyData)
 	dao.SaveAdminData(myAdmins)
 	dao.SaveHRData(myHr)
 	dao.SaveEmployeesData(myEmployee)
+
+	fmt.Println("All data inserted successfully.")
+
 }

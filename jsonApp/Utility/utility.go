@@ -9,6 +9,23 @@ import (
 	"time"
 )
 
+func ReadCompaniesFromFile(filePath string) (data []byte, error error) {
+	// Open the JSON file
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %v", err)
+	}
+	defer file.Close()
+
+	// Read the contents of the file
+	fileContents, err := io.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("error reading file: %v", err)
+	}
+
+	return fileContents, err
+}
+
 func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.MyError) {
 	parseTime := func(timeStr, label string) (time.Time, error) {
 		// Try parsing with RFC3339
@@ -41,22 +58,6 @@ func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.
 
 	return createdAtParsed, updatedAtParsed, nil
 }
-func ReadCompaniesFromFile(filePath string) (data []byte, error error) {
-	// Open the JSON file
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("error opening file: %v", err)
-	}
-	defer file.Close()
-
-	// Read the contents of the file
-	fileContents, err := io.ReadAll(file)
-	if err != nil {
-		return nil, fmt.Errorf("error reading file: %v", err)
-	}
-
-	return fileContents, err
-}
 
 // ValidateData checks if the data is valid for a given field and regex.
 func ValidateData(field model.Field) *model.MyError {
@@ -72,15 +73,6 @@ func ValidateData(field model.Field) *model.MyError {
 		return err
 	}
 
-	return nil
-}
-
-// ValidateDate validates if a string is a valid date (ISO 8601)
-func ValidateDate(date string) *model.MyError {
-	_, err := time.Parse(time.RFC3339, date)
-	if err != nil {
-		return &model.MyError{Message: "Invalid date format"}
-	}
 	return nil
 }
 

@@ -3,8 +3,8 @@ package dao
 import (
 	"context"
 	"fmt"
-	db "jsonApp/Db"
 	"jsonApp/config"
+	db "jsonApp/db"
 	"jsonApp/model"
 )
 

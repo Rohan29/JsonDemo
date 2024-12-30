@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"jsonApp/config"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,6 +12,13 @@ import (
 
 // DBClient is a global variable for the MongoDB client
 var DBClient *mongo.Client
+
+func InitMongo() {
+	_, err := ConnectDB(config.Mongo_URI)
+	if err != nil {
+		log.Fatal("Error connecting to MongoDB:", err)
+	}
+}
 
 // ConnectDB initializes a connection to MongoDB and returns the client
 func ConnectDB(uri string) (*mongo.Client, error) {
