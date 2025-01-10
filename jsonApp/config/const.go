@@ -6,6 +6,6 @@ const (
 	Db_Name             = "jsonApp"
 	Company_Collection  = "company"
 	Admin_Collection    = "admin"
-	HR_Collection       = "HR"
+	HR_Collection       = "hr"
 	Employee_Collection = "employee"
 )

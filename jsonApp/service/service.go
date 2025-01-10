@@ -70,12 +70,43 @@ func GetDataFromJson() {
 				myEmployee = append(myEmployee, *newEmployee)
 			}
 		}
-
 	}
-	dao.SaveCompanyData(mycompanyData)
-	dao.SaveAdminData(myAdmins)
-	dao.SaveHRData(myHr)
-	dao.SaveEmployeesData(myEmployee)
+	func() {
+		myErr, _ := dao.SaveCompanyData(mycompanyData)
+		if myErr != nil {
+			fmt.Printf("Company data not stored due to Error %s", myErr.Message)
+			return
+		} else {
+			fmt.Println("Company data stored successfully")
+		}
+	}()
+	func() {
+		myErr, _ := dao.SaveAdminData(myAdmins)
+		if myErr != nil {
+			fmt.Printf("Admin data not stored due to Error %s", myErr.Message)
+			return
+		} else {
+			fmt.Println("Admin data stored successfully")
+		}
+	}()
+	func() {
+		myErr, _ := dao.SaveHRData(myHr)
+		if myErr != nil {
+			fmt.Printf("HR data not stored due to Error %s", myErr.Message)
+			return
+		} else {
+			fmt.Println("HR data stored successfully")
+		}
+	}()
+	func() {
+		myErr, _ := dao.SaveEmployeesData(myEmployee)
+		if myErr != nil {
+			fmt.Printf("Employee data not stored due to Error %s", myErr.Message)
+			return
+		} else {
+			fmt.Println("Employee data stored successfully")
+		}
+	}()
 
 	fmt.Println("All data inserted successfully.")
 

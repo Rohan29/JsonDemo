@@ -18,7 +18,6 @@ func SaveCompanyData(company *model.Company) (*model.MyError, bool) {
 	// Insert company data into the "companies" collection
 	_, err := companyCollection.InsertOne(context.Background(), company)
 	if err != nil {
-
 		return &model.MyError{Message: err.Error()}, false
 	}
 	// Retrieve company ID from the insert result

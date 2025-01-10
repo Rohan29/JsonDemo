@@ -5,7 +5,6 @@ import (
 	"io"
 	"jsonApp/model"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -27,6 +26,7 @@ func ReadCompaniesFromFile(filePath string) (data []byte, error error) {
 }
 
 func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.MyError) {
+
 	parseTime := func(timeStr, label string) (time.Time, error) {
 		// Try parsing with RFC3339
 		t, err := time.Parse(time.RFC3339, timeStr)
@@ -59,29 +59,29 @@ func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.
 	return createdAtParsed, updatedAtParsed, nil
 }
 
-// ValidateData checks if the data is valid for a given field and regex.
-func ValidateData(field model.Field) *model.MyError {
-	if strings.TrimSpace(field.Value) == "" {
-		str := field.Name + " is empty."
-		err := &model.MyError{Message: str}
-		return err
-	}
+// // ValidateData checks if the data is valid for a given field and regex.
+// func ValidateData(field model.Field) *model.MyError {
+// 	if strings.TrimSpace(field.Value) == "" {
+// 		str := field.Name + " is empty."
+// 		err := &model.MyError{Message: str}
+// 		return err
+// 	}
 
-	if field.Regex != nil && !field.Regex.MatchString(field.Value) {
-		str := field.Name + " is not a valid field."
-		err := &model.MyError{Message: str}
-		return err
-	}
+// 	if field.Regex != nil && !field.Regex.MatchString(field.Value) {
+// 		str := field.Name + " is not a valid field."
+// 		err := &model.MyError{Message: str}
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
-// ValidateEntity validates fields for different entities (e.g., Company, Admin, HR, Employee)
-func ValidateEntity(fields []model.Field) *model.MyError {
-	for _, field := range fields {
-		if err := ValidateData(field); err != nil {
-			return err
-		}
-	}
-	return nil
-}
+// // ValidateEntity validates fields for different entities (e.g., Company, Admin, HR, Employee)
+// func ValidateEntity(fields []model.Field) *model.MyError {
+// 	for _, field := range fields {
+// 		if err := ValidateData(field); err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }
