@@ -3,9 +3,11 @@ package utility
 import (
 	"fmt"
 	"io"
-	"jsonApp/model"
 	"os"
+	"regexp"
 	"time"
+
+	"github.com/go-playground/validator"
 )
 
 func ReadCompaniesFromFile(filePath string) (data []byte, error error) {
@@ -25,7 +27,7 @@ func ReadCompaniesFromFile(filePath string) (data []byte, error error) {
 	return fileContents, err
 }
 
-func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.MyError) {
+func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, error) {
 
 	parseTime := func(timeStr, label string) (time.Time, error) {
 		// Try parsing with RFC3339
@@ -37,51 +39,41 @@ func ParseTimestamps(createdAt, updatedAt string) (time.Time, time.Time, *model.
 		// If RFC3339 parsing fails, try the custom format
 		t, err = time.Parse("2006-01-02 15:04:05 -0700 UTC", timeStr)
 		if err != nil {
-			return time.Time{}, fmt.Errorf("failed to parse time for %s: %v", label, err)
+			return time.Time{}, err
 		}
 		return t, nil
 	}
 
 	createdAtParsed, err := parseTime(createdAt, "Created At")
 	if err != nil {
-		str := "failed to parse time for CreatedAt" + createdAt
-		err := &model.MyError{Message: str}
 		return time.Time{}, time.Time{}, err
 	}
 
 	updatedAtParsed, err := parseTime(updatedAt, "Updated At")
 	if err != nil {
-		str := "failed to parse time for UpdatedAt" + updatedAt
-		err := &model.MyError{Message: str}
 		return time.Time{}, time.Time{}, err
 	}
 
 	return createdAtParsed, updatedAtParsed, nil
 }
 
-// // ValidateData checks if the data is valid for a given field and regex.
-// func ValidateData(field model.Field) *model.MyError {
-// 	if strings.TrimSpace(field.Value) == "" {
-// 		str := field.Name + " is empty."
-// 		err := &model.MyError{Message: str}
-// 		return err
-// 	}
+func regexValidator(fl validator.FieldLevel) bool {
+	tag := fl.Param()
+	match, _ := regexp.MatchString(tag, fl.Field().String())
+	return match
+}
 
-// 	if field.Regex != nil && !field.Regex.MatchString(field.Value) {
-// 		str := field.Name + " is not a valid field."
-// 		err := &model.MyError{Message: str}
-// 		return err
-// 	}
+// ValidateStruct validates any struct based on its tags
+func ValidateStruct(s interface{}) error {
+	validate := validator.New()
+	validate.RegisterValidation("regex", regexValidator)
 
-// 	return nil
-// }
-
-// // ValidateEntity validates fields for different entities (e.g., Company, Admin, HR, Employee)
-// func ValidateEntity(fields []model.Field) *model.MyError {
-// 	for _, field := range fields {
-// 		if err := ValidateData(field); err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
+	if err := validate.Struct(s); err != nil {
+		errorMessages := ""
+		for _, err := range err.(validator.ValidationErrors) {
+			errorMessages += fmt.Sprintf("Field '%s' failed validation with tag '%s'. ", err.StructField(), err.Tag())
+		}
+		return err
+	}
+	return nil
+}

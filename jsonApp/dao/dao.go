@@ -8,9 +8,13 @@ import (
 	"jsonApp/model"
 )
 
+type name interface {
+	SaveData()
+}
+
 // Get the "jsonApp" database
 
-func SaveCompanyData(company *model.Company) (*model.MyError, bool) {
+func SaveCompanyData(company *model.Company) (error, bool) {
 	var database = db.GetDB(config.Db_Name)
 
 	// MongoDB collections
@@ -18,7 +22,7 @@ func SaveCompanyData(company *model.Company) (*model.MyError, bool) {
 	// Insert company data into the "companies" collection
 	_, err := companyCollection.InsertOne(context.Background(), company)
 	if err != nil {
-		return &model.MyError{Message: err.Error()}, false
+		return err, false
 	}
 	// Retrieve company ID from the insert result
 	companyID1 := company.CompanyID
@@ -26,7 +30,7 @@ func SaveCompanyData(company *model.Company) (*model.MyError, bool) {
 	return nil, true
 }
 
-func SaveAdminData(admin *model.Admin) (*model.MyError, bool) {
+func SaveAdminData(admin *model.Admin) (error, bool) {
 	var database = db.GetDB(config.Db_Name)
 	var adminCollection = database.Collection(config.Admin_Collection)
 
@@ -34,7 +38,7 @@ func SaveAdminData(admin *model.Admin) (*model.MyError, bool) {
 	_, err := adminCollection.InsertOne(context.Background(), admin)
 	if err != nil {
 
-		return &model.MyError{Message: err.Error()}, false
+		return err, false
 	}
 	// Retrieve company ID from the insert result
 	adminid1 := admin.AdminID
@@ -42,11 +46,11 @@ func SaveAdminData(admin *model.Admin) (*model.MyError, bool) {
 	return nil, true
 }
 
-// func SaveAdminsData(admins []model.Admin) (*model.MyError, bool) {
+// func SaveAdminsData(admins []model.Admin) (error, bool) {
 
 // }
 
-func SaveHRData(hr *model.HR) (*model.MyError, bool) {
+func SaveHRData(hr *model.HR) (error, bool) {
 	var database = db.GetDB(config.Db_Name)
 
 	var hrCollection = database.Collection(config.HR_Collection)
@@ -54,7 +58,7 @@ func SaveHRData(hr *model.HR) (*model.MyError, bool) {
 	_, err := hrCollection.InsertOne(context.Background(), hr)
 	if err != nil {
 
-		return &model.MyError{Message: err.Error()}, false
+		return err, false
 	}
 	// Retrieve company ID from the insert result
 	hrid := hr.HRID
@@ -62,11 +66,11 @@ func SaveHRData(hr *model.HR) (*model.MyError, bool) {
 	return nil, true
 }
 
-// func SaveHRsData(hrs []model.HR) (*model.MyError, bool) {
+// func SaveHRsData(hrs []model.HR) (error, bool) {
 
 // }
 
-func SaveEmployeeData(employee *model.Employee) (*model.MyError, bool) {
+func SaveEmployeeData(employee *model.Employee) (error, bool) {
 	var database = db.GetDB(config.Db_Name)
 
 	var employeeCollection = database.Collection(config.Employee_Collection)
@@ -75,7 +79,7 @@ func SaveEmployeeData(employee *model.Employee) (*model.MyError, bool) {
 	_, err := employeeCollection.InsertOne(context.Background(), employee)
 	if err != nil {
 
-		return &model.MyError{Message: err.Error()}, false
+		return err, false
 	}
 	// Retrieve company ID from the insert result
 	empid := employee.EmployeeID
@@ -83,7 +87,7 @@ func SaveEmployeeData(employee *model.Employee) (*model.MyError, bool) {
 	return nil, true
 }
 
-func SaveEmployeesData(employees []model.Employee) (*model.MyError, bool) {
+func SaveEmployeesData(employees []*model.Employee) (error, bool) {
 	var database = db.GetDB(config.Db_Name)
 
 	var employeeCollection = database.Collection(config.Employee_Collection)
@@ -96,7 +100,7 @@ func SaveEmployeesData(employees []model.Employee) (*model.MyError, bool) {
 	// Insert multiple employees into the collection
 	result, err := employeeCollection.InsertMany(context.Background(), employeesInterface)
 	if err != nil {
-		return &model.MyError{Message: err.Error()}, false
+		return err, false
 	}
 
 	// Print the inserted employee IDs
